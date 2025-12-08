@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}Nossos Serviços{% endblock %}
+
+{% block content %}
+
+<div class="bg-norte-blue text-white py-5">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold">Portfólio de Serviços</h1>
+        <p class="lead">Soluções completas em energia para grandes demandas.</p>
+    </div>
+</div>
+
+<div class="container py-5">
+    {% for category in categories %}
+        <div class="mb-4 mt-2">
+            <h3 class="text-norte-blue fw-bold border-bottom pb-2 border-warning" style="display: inline-block;">
+                {{ category.name }}
+            </h3>
+        </div>
+
+        <div class="row mb-5">
+            {% for service in category.services.all %}
+                {% if service.is_active %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="card h-100 border-0 shadow-sm hover-effect">
+                        <div class="position-relative overflow-hidden" style="height: 200px;">
+                            {% if service.cover_image %}
+                                <img src="{{ service.cover_image.url }}" class="card-img-top h-100 w-100" style="object-fit: cover;" alt="{{ service.title }}">
+                            {% else %}
+                                <div class="bg-secondary h-100 w-100 d-flex align-items-center justify-content-center text-white">
+                                    <i class="fas fa-bolt fa-3x"></i>
+                                </div>
+                            {% endif %}
+                            
+                            {% if service.icon_class %}
+                            <div class="position-absolute bottom-0 end-0 bg-warning p-2 text-dark rounded-start">
+                                <i class="{{ service.icon_class }} fa-lg"></i>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold text-norte-blue">
+                                <a href="{% url 'service_detail' service.slug %}" class="text-decoration-none text-norte-blue stretched-link">
+                                    {{ service.title }}
+                                </a>
+                            </h5>
+                            <p class="card-text text-muted small">{{ service.short_description|truncatechars:100 }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% empty %}
+        <div class="text-center py-5">
+            <p class="lead text-muted">Nenhum serviço cadastrado no momento.</p>
+        </div>
+    {% endfor %}
+</div>
+
+<section class="bg-light py-5 text-center">
+    <div class="container">
+        <h3 class="fw-bold mb-3">Não encontrou o que procura?</h3>
+        <p class="mb-4">Nossa equipe de engenharia desenvolve projetos personalizados.</p>
+        <a href="{% url 'home' %}#contact" class="btn btn-norte btn-lg">Fale com um Especialista</a>
+    </div>
+</section>
+
+{% endblock %}

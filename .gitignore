@@ -1,0 +1,8 @@
+# Exemplo de .gitignore
+node_modules/
+venv/
+__pycache__/
+.env
+.DS_Store
+media/
+*.log

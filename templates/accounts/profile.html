@@ -1,0 +1,301 @@
+{% extends 'base.html' %}
+
+{% block title %}Minha Área - Norte Tech{% endblock %}
+
+{% block content %}
+<div class="bg-light py-5">
+    <div class="container">
+        
+        <div class="row align-items-center mb-4">
+            <div class="col-md-8">
+                <h2 class="fw-bold text-norte-blue">Olá, {{ user.first_name|default:user.username }}!</h2>
+                <p class="text-muted">Mantenha seu currículo atualizado para aumentar suas chances.</p>
+            </div>
+            <div class="col-md-4 text-end">
+                 <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-danger btn-sm">Sair da Conta</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-3 mb-4">
+                <div class="list-group shadow-sm sticky-top" style="top: 100px; z-index: 1;">
+                    <a href="#" class="list-group-item list-group-item-action active bg-norte-blue border-0">
+                        <i class="fas fa-user-edit me-2"></i> Dados Pessoais
+                    </a>
+                    <a href="#education" class="list-group-item list-group-item-action">
+                        <i class="fas fa-graduation-cap me-2"></i> Formação
+                    </a>
+                    <a href="#experience" class="list-group-item list-group-item-action">
+                        <i class="fas fa-briefcase me-2"></i> Experiência
+                    </a>
+                    <a href="#courses" class="list-group-item list-group-item-action">
+                        <i class="fas fa-certificate me-2"></i> Cursos
+                    </a>
+                    <a href="#applications" class="list-group-item list-group-item-action">
+                        <i class="fas fa-history me-2"></i> Minhas Candidaturas
+                        {% if my_applications %}
+                            <span class="badge bg-danger rounded-pill float-end">{{ my_applications.count }}</span>
+                        {% endif %}
+                    </a>
+                    <a href="{% url 'careers_home' %}" class="list-group-item list-group-item-action fw-bold text-warning bg-dark mt-2">
+                        <i class="fas fa-search me-2"></i> Ver Vagas
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-9">
+                
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0 fw-bold text-norte-blue">Editar Dados Pessoais</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                        
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
+
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            
+                            <div class="row mb-4 align-items-center">
+                                <div class="col-auto">
+                                    {% if profile.photo %}
+                                        <img src="{{ profile.photo.url }}" class="rounded-circle" width="80" height="80" style="object-fit: cover;">
+                                    {% else %}
+                                        <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center text-white" style="width: 80px; height: 80px;">
+                                            <i class="fas fa-user fa-2x"></i>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col">
+                                    <label class="form-label small fw-bold">Alterar Foto</label>
+                                    {{ form.photo }}
+                                    <div class="text-danger small">{{ form.photo.errors }}</div>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <label class="form-label">Nome Completo *</label>
+                                    {{ form.full_name }}
+                                    <div class="text-danger small">{{ form.full_name.errors }}</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">CPF * (Use pontos e traço: 000.000.000-00)</label>
+                                    {{ form.cpf }}
+                                    <div class="text-danger small">{{ form.cpf.errors }}</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Data de Nascimento *</label>
+                                    {{ form.birth_date }}
+                                    <div class="text-danger small">{{ form.birth_date.errors }}</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Telefone / WhatsApp *</label>
+                                    {{ form.phone }}
+                                    <div class="text-danger small">{{ form.phone.errors }}</div>
+                                </div>
+                            </div>
+
+                            <h5 class="mt-4 mb-3 text-norte-blue border-bottom pb-2">Endereço</h5>
+                            <div class="row g-3">
+                                <div class="col-md-3">
+                                    <label class="form-label">CEP</label>
+                                    {{ form.cep }}
+                                    <div class="text-danger small">{{ form.cep.errors }}</div>
+                                </div>
+                                <div class="col-md-9">
+                                    <label class="form-label">Endereço</label>
+                                    {{ form.address }}
+                                    <div class="text-danger small">{{ form.address.errors }}</div>
+                                </div>
+                                <div class="col-md-8">
+                                    <label class="form-label">Cidade *</label>
+                                    {{ form.city }}
+                                    <div class="text-danger small">{{ form.city.errors }}</div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Estado (UF) *</label>
+                                    {{ form.state }}
+                                    <div class="text-danger small">{{ form.state.errors }}</div>
+                                </div>
+                            </div>
+
+                            <h5 class="mt-4 mb-3 text-norte-blue border-bottom pb-2">Currículo (Arquivo)</h5>
+                            <div class="mb-3">
+                                <label class="form-label">Anexar PDF Principal</label>
+                                {{ form.resume_file }}
+                                <div class="text-danger small">{{ form.resume_file.errors }}</div>
+                                
+                                {% if profile.resume_file %}
+                                    <small class="text-success d-block mt-2"><i class="fas fa-check"></i> Arquivo atual: <a href="{{ profile.resume_file.url }}" target="_blank">Ver Currículo</a></small>
+                                {% else %}
+                                    <small class="text-danger d-block mt-2"><i class="fas fa-exclamation-circle"></i> Nenhum currículo anexado. Obrigatório para vagas.</small>
+                                {% endif %}
+                            </div>
+
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-norte btn-lg">Salvar Alterações</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div id="education" class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 fw-bold text-norte-blue"><i class="fas fa-graduation-cap me-2"></i> Formação Acadêmica</h5>
+                        <a href="{% url 'add_education' %}" class="btn btn-sm btn-outline-primary"><i class="fas fa-plus"></i> Adicionar</a>
+                    </div>
+                    <div class="card-body">
+                        {% for item in user.educations.all %}
+                            <div class="border-bottom pb-3 mb-3 position-relative">
+                                <h6 class="fw-bold mb-0 text-dark">{{ item.course }}</h6>
+                                <p class="text-muted small mb-0">{{ item.institution }} - {{ item.get_level_display }}</p>
+                                <p class="text-muted small mb-0">{{ item.start_date|date:"Y" }} - {% if item.end_date %}{{ item.end_date|date:"Y" }}{% else %}Cursando{% endif %}</p>
+                                <a href="{% url 'delete_education' item.pk %}" class="btn btn-sm text-danger position-absolute top-0 end-0" onclick="return confirm('Tem certeza que deseja remover esta formação?');" title="Remover"><i class="fas fa-trash-alt"></i></a>
+                            </div>
+                        {% empty %}
+                            <div class="text-center py-3 text-muted bg-light rounded border border-light">
+                                <small>Nenhuma formação registrada ainda.</small>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div id="experience" class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 fw-bold text-norte-blue"><i class="fas fa-briefcase me-2"></i> Experiência Profissional</h5>
+                        <a href="{% url 'add_experience' %}" class="btn btn-sm btn-outline-primary"><i class="fas fa-plus"></i> Adicionar</a>
+                    </div>
+                    <div class="card-body">
+                        {% for item in user.experiences.all %}
+                            <div class="border-bottom pb-3 mb-3 position-relative">
+                                <h6 class="fw-bold mb-0 text-dark">{{ item.role }}</h6>
+                                <p class="text-muted small mb-0 fw-bold">{{ item.company }}</p>
+                                <p class="text-muted small mb-1">{{ item.start_date|date:"m/Y" }} - {% if item.end_date %}{{ item.end_date|date:"m/Y" }}{% else %}Atual{% endif %}</p>
+                                {% if item.description %}
+                                    <p class="small text-secondary mb-0 fst-italic">"{{ item.description|truncatechars:100 }}"</p>
+                                {% endif %}
+                                <a href="{% url 'delete_experience' item.pk %}" class="btn btn-sm text-danger position-absolute top-0 end-0" onclick="return confirm('Tem certeza?');" title="Remover"><i class="fas fa-trash-alt"></i></a>
+                            </div>
+                        {% empty %}
+                            <div class="text-center py-3 text-muted bg-light rounded border border-light">
+                                <small>Nenhuma experiência registrada ainda.</small>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div id="courses" class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 fw-bold text-norte-blue"><i class="fas fa-certificate me-2"></i> Cursos e Certificações</h5>
+                        <a href="{% url 'add_course' %}" class="btn btn-sm btn-outline-primary"><i class="fas fa-plus"></i> Adicionar</a>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                        {% for item in user.extra_courses.all %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                <div>
+                                    <strong class="text-dark">{{ item.name }}</strong>
+                                    <br><small class="text-muted">{{ item.institution }} ({{ item.hours }}h) - {{ item.completion_year }}</small>
+                                </div>
+                                <a href="{% url 'delete_course' item.pk %}" class="text-danger" onclick="return confirm('Tem certeza?');" title="Remover"><i class="fas fa-trash-alt"></i></a>
+                            </li>
+                        {% empty %}
+                            <div class="text-center py-3 text-muted bg-light rounded border border-light">
+                                <small>Nenhum curso registrado ainda.</small>
+                            </div>
+                        {% endfor %}
+
+                        
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="applications" class="card border-0 shadow-sm mt-4 mb-5">
+                    <div class="card-header bg-norte-blue text-white py-3">
+                        <h5 class="mb-0 fw-bold"><i class="fas fa-history me-2"></i> Histórico de Processos Seletivos</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th class="ps-4">Vaga</th>
+                                        <th>Data Envio</th>
+                                        <th>Status Atual</th>
+                                        <th>Observação</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for app in my_applications %}
+                                    <tr>
+                                        <td class="ps-4 fw-bold text-norte-blue">
+                                            {% if app.job %}
+                                                {{ app.job.title }}
+                                            {% else %}
+                                                Banco de Talentos (Geral)
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ app.sent_at|date:"d/m/Y" }}</td>
+                                        <td>
+                                            {% if app.status == 'NOVO' %}
+                                                <span class="badge bg-primary">Recebido</span>
+                                            {% elif app.status == 'ANALISE' %}
+                                                <span class="badge bg-info text-dark">Em Análise</span>
+                                            {% elif app.status == 'ENTREVISTA' %}
+                                                <span class="badge bg-warning text-dark">Entrevista</span>
+                                            {% elif app.status == 'APROVADO' %}
+                                                <span class="badge bg-success">Aprovado</span>
+                                            {% elif app.status == 'REPROVADO' %}
+                                                <span class="badge bg-danger">Encerrado</span>
+                                            {% elif app.status == 'BANCO' %}
+                                                <span class="badge bg-secondary">Banco de Talentos</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-muted small">
+                                            {% if app.status == 'BANCO' %}
+                                                Seu perfil ficará disponível para futuras vagas.
+                                            {% elif app.status == 'REPROVADO' %}
+                                                Agradecemos sua participação.
+                                            {% else %}
+                                                Aguarde contato do RH.
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="4" class="text-center py-4 text-muted">
+                                            Você ainda não aplicou para nenhuma vaga. 
+                                            <a href="{% url 'careers_home' %}">Ver oportunidades</a>.
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

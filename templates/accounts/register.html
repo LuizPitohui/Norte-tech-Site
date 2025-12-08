@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block title %}Cadastro de Currículo{% endblock %}
+
+{% block content %}
+<div class="bg-light py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card shadow border-0">
+                    <div class="card-header bg-norte-blue text-white text-center py-4">
+                        <h3 class="fw-bold mb-0">Cadastro de Candidato</h3>
+                        <p class="mb-0 text-white-50">Preencha seus dados para acessar o Banco de Vagas</p>
+                    </div>
+                    
+                    <div class="card-body p-5">
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                            {% endfor %}
+                        {% endif %}
+
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            
+                            <h5 class="text-norte-blue fw-bold mb-3"><i class="fas fa-lock me-2"></i> Dados de Acesso</h5>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label">Usuário (Login)</label>
+                                    {{ user_form.username }}
+                                    <div class="form-text text-muted small">{{ user_form.username.help_text }}</div>
+                                    {% if user_form.username.errors %}<div class="text-danger small">{{ user_form.username.errors }}</div>{% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">E-mail</label>
+                                    {{ user_form.email }}
+                                    {% if user_form.email.errors %}<div class="text-danger small">{{ user_form.email.errors }}</div>{% endif %}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Senha</label>
+                                    {{ user_form.password1 }} <div class="form-text text-muted small">{{ user_form.password1.help_text }}</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Confirmar Senha</label>
+                                    {{ user_form.password2 }}
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <h5 class="text-norte-blue fw-bold mb-3 mt-4"><i class="fas fa-id-card me-2"></i> Dados Pessoais</h5>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-8">
+                                    <label class="form-label">Nome Completo</label>
+                                    {{ profile_form.full_name }}
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">CPF</label>
+                                    {{ profile_form.cpf }}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Data de Nascimento</label>
+                                    {{ profile_form.birth_date }}
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Celular / WhatsApp</label>
+                                    {{ profile_form.phone }}
+                                </div>
+                            </div>
+
+                            <h5 class="text-norte-blue fw-bold mb-3 mt-4"><i class="fas fa-map-marker-alt me-2"></i> Endereço</h5>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-3">
+                                    <label class="form-label">CEP</label>
+                                    {{ profile_form.cep }}
+                                </div>
+                                <div class="col-md-9">
+                                    <label class="form-label">Endereço (Rua, Bairro, Nº)</label>
+                                    {{ profile_form.address }}
+                                </div>
+                                <div class="col-md-8">
+                                    <label class="form-label">Cidade</label>
+                                    {{ profile_form.city }}
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Estado</label>
+                                    {{ profile_form.state }}
+                                </div>
+                            </div>
+
+                            <h5 class="text-norte-blue fw-bold mb-3 mt-4"><i class="fas fa-file-upload me-2"></i> Currículo</h5>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-12">
+                                    <label class="form-label">Arquivo (PDF ou DOC)</label>
+                                    {{ profile_form.resume_file }}
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2 mt-5">
+                                <button class="btn btn-norte btn-lg text-uppercase fw-bold" type="submit">
+                                    Finalizar Cadastro e Criar Conta
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <p class="text-center mt-3">Já possui cadastro? <a href="{% url 'login' %}">Fazer Login</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
