@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}Envio de Documentos{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="mb-4">
+                <a href="{% url 'profile' %}" class="text-decoration-none text-muted"><i class="fas fa-arrow-left"></i> Voltar para meu perfil</a>
+            </div>
+
+            <div class="card shadow border-0">
+                <div class="card-header bg-norte-blue text-white py-3">
+                    <h4 class="mb-0 fw-bold">Entrega de Documentos</h4>
+                    <p class="mb-0 small">Vaga: {{ candidate.job.title }}</p>
+                </div>
+                <div class="card-body p-4">
+                    
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i> Por favor, envie os documentos solicitados abaixo para prosseguirmos com sua contratação.
+                    </div>
+
+                    <div class="list-group">
+                        {% for doc in documents %}
+                        <div class="list-group-item p-4 mb-3 border rounded shadow-sm">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h5 class="fw-bold mb-1">{{ doc.doc_type.title }}</h5>
+                                    <small class="text-muted">{{ doc.doc_type.description }}</small>
+                                </div>
+                                <div>
+                                    {% if doc.status == 'PENDENTE' %}
+                                        <span class="badge bg-warning text-dark">Pendente</span>
+                                    {% elif doc.status == 'ENVIADO' %}
+                                        <span class="badge bg-info text-dark">Em Análise</span>
+                                    {% elif doc.status == 'VALIDADO' %}
+                                        <span class="badge bg-success">Aprovado</span>
+                                    {% elif doc.status == 'REJEITADO' %}
+                                        <span class="badge bg-danger">Rejeitado</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            {% if doc.status == 'VALIDADO' %}
+                                <div class="text-success fw-bold">
+                                    <i class="fas fa-check-circle"></i> Documento aceito pelo RH.
+                                </div>
+                            {% else %}
+                                
+                                {% if doc.status == 'REJEITADO' %}
+                                    <div class="alert alert-danger py-2 mb-3">
+                                        <strong>Motivo da Rejeição:</strong> {{ doc.rejection_reason }}
+                                    </div>
+                                {% endif %}
+
+                                <form method="POST" enctype="multipart/form-data" class="d-flex align-items-center gap-2">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="doc_id" value="{{ doc.id }}">
+                                    
+                                    {% if doc.file %}
+                                        <div class="me-3">
+                                            <a href="{{ doc.file.url }}" target="_blank" class="btn btn-sm btn-outline-secondary">Ver enviado</a>
+                                        </div>
+                                    {% endif %}
+
+                                    <input type="file" name="file" class="form-control form-control-sm" required accept=".pdf,.jpg,.jpeg,.png">
+                                    <button type="submit" class="btn btn-sm btn-primary">
+                                        {% if doc.file %}Reenviar{% else %}Enviar{% endif %}
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </div>
+                        {% empty %}
+                        <p class="text-center text-muted">Nenhum documento solicitado ainda.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

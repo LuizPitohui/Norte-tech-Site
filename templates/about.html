@@ -13,27 +13,28 @@
 
 <div class="container py-5">
     <div class="row align-items-center mb-5">
-        <div class="col-lg-6">
-            <h2 class="text-norte-blue fw-bold mb-3">Quem Somos</h2>
-            <p class="lead text-muted">A Norte Tech é referência na prestação de serviços no segmento elétrico na região Norte do país.</p>
-            <p>Fundada em <strong>1º de julho de 2019</strong>[cite: 11], iniciamos nossa trajetória em um período de grandes mudanças no mercado de energia do Amazonas. Começamos na sede Tarumã e rapidamente expandimos nossa atuação para descentralizar o atendimento e otimizar os serviços para a população.</p>
-            <p>Hoje, atuamos nos estados do <strong>Amazonas e Roraima</strong>[cite: 16], garantindo qualidade técnica e responsabilidade social.</p>
-            
-            <div class="row mt-4 text-center">
-                <div class="col-6 mb-3">
-                    <div class="p-3 border rounded shadow-sm bg-light">
-                        <h3 class="text-norte-blue fw-bold display-6">3.500+</h3>
-                        <small class="text-uppercase fw-bold text-muted">Colaboradores</small>
-                    </div>
-                </div>
-                <div class="col-6 mb-3">
-                    <div class="p-3 border rounded shadow-sm bg-light">
-                        <h3 class="text-warning fw-bold display-6 text-dark">1.150+</h3>
-                        <small class="text-uppercase fw-bold text-muted">Veículos na Frota</small>
-                    </div>
-                </div>
+<div class="col-lg-6">
+    <h2 class="text-norte-blue fw-bold mb-3">Quem Somos</h2>
+    
+    <div class="text-muted">
+        {{ company_settings.about_text|linebreaks }}
+    </div>
+    
+    <div class="row mt-4 text-center">
+        <div class="col-6 mb-3">
+            <div class="p-3 border rounded shadow-sm bg-light">
+                <h3 class="text-norte-blue fw-bold display-6">3.500+</h3>
+                <small class="text-uppercase fw-bold text-muted">Colaboradores</small>
             </div>
         </div>
+        <div class="col-6 mb-3">
+            <div class="p-3 border rounded shadow-sm bg-light">
+                <h3 class="text-warning fw-bold display-6 text-dark">1.150+</h3>
+                <small class="text-uppercase fw-bold text-muted">Veículos na Frota</small>
+            </div>
+        </div>
+    </div>
+</div>
         <div class="col-lg-6">
             <div class="ratio ratio-4x3 rounded overflow-hidden shadow">
                  <img src="https://source.unsplash.com/800x600/?electrician,truck" alt="Frota Norte Tech" style="object-fit: cover;">

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 
@@ -23,98 +24,76 @@
     {% endif %}
 </section>
 
-<section id="services" class="py-5">
+<section class="py-5 bg-white">
     <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="text-norte-blue fw-bold">Nossos Serviços</h2>
-            <div style="width: 60px; height: 3px; background-color: var(--norte-yellow); margin: 10px auto;"></div>
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <h2 class="text-norte-blue fw-bold text-uppercase">Últimas Notícias</h2>
+                <div style="width: 60px; height: 3px; background-color: var(--norte-yellow); margin: 10px auto;"></div>
+            </div>
         </div>
 
-        <div class="row">
-            {% for service in services %}
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 border-0 shadow-sm hover-effect">
-                    {% if service.cover_image %}
-                    <img src="{{ service.cover_image.url }}" class="card-img-top" alt="{{ service.title }}" style="height: 200px; object-fit: cover;">
-                    {% else %}
-                    <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
-                        <i class="fas fa-bolt fa-3x"></i>
+        <div class="row g-4">
+            {% for noticia in noticias %}
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 border-0 shadow-sm hover-up">
+                    <div class="position-relative overflow-hidden" style="height: 200px;">
+                        {% if noticia.imagem %}
+                            <img src="{{ noticia.imagem.url }}" class="card-img-top w-100 h-100" style="object-fit: cover;" alt="{{ noticia.titulo }}">
+                        {% else %}
+                            <div class="bg-secondary w-100 h-100 d-flex align-items-center justify-content-center text-white">
+                                <i class="fas fa-newspaper fa-2x"></i>
+                            </div>
+                        {% endif %}
+                        <div class="position-absolute top-0 end-0 bg-warning text-dark px-2 py-1 small fw-bold rounded-start mt-2">
+                            {{ noticia.data_criacao|date:"d/m" }}
+                        </div>
                     </div>
-                    {% endif %}
-                    <div class="card-body">
-                        <h5 class="card-title text-norte-blue fw-bold">{{ service.title }}</h5>
-                        <p class="card-text text-muted">{{ service.short_description }}</p>
-                    </div>
-                    <div class="card-footer bg-white border-0">
-                        <a href="{% url 'service_detail' service.slug %}" class="btn btn-outline-primary btn-sm w-100">Saiba Mais</a>
+
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title fw-bold text-norte-blue fs-6">{{ noticia.titulo|truncatechars:50 }}</h5>
+                        <p class="card-text text-muted small flex-grow-1">
+                            {{ noticia.resumo|truncatechars:90 }}
+                        </p>
+                        
+                        <a href="{% url 'noticia_detail' noticia.slug %}" class="btn btn-outline-primary btn-sm w-100 mt-2 rounded-pill stretched-link">
+                            Ler Mais <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
                     </div>
                 </div>
             </div>
             {% empty %}
-            <div class="col-12 text-center">
-                <p>Nenhum serviço cadastrado ainda. Acesse o admin para adicionar.</p>
+            <div class="col-12 text-center py-5 text-muted">
+                <i class="far fa-newspaper fa-3x mb-3"></i>
+                <p>Nenhuma notícia publicada recentemente.</p>
             </div>
             {% endfor %}
         </div>
     </div>
-</section>
 
-<section id="contact" class="py-5 bg-light">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="text-norte-blue fw-bold">Fale Conosco</h2>
-            <p class="text-muted">Entre em contato para solicitar orçamentos ou tirar dúvidas.</p>
+    <div class="row g-4">
         </div>
 
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                            {{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    {% endfor %}
-                {% endif %}
-
-                <div class="card border-0 shadow-lg">
-                    <div class="card-body p-5">
-                        <form method="POST" action="{% url 'home' %}">
-                            {% csrf_token %}
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="name" class="form-label">Nome Completo</label>
-                                    <input type="text" class="form-control" id="name" name="name" required>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="email" class="form-label">E-mail</label>
-                                    <input type="email" class="form-control" id="email" name="email" required>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <label for="phone" class="form-label">Telefone / WhatsApp</label>
-                                <input type="tel" class="form-control" id="phone" name="phone">
-                            </div>
-                            <div class="mb-3">
-                                <label for="subject" class="form-label">Assunto</label>
-                                <select class="form-select" id="subject" name="subject">
-                                    <option value="Orcamento">Solicitar Orçamento</option>
-                                    <option value="TrabalheConosco">Trabalhe Conosco</option>
-                                    <option value="Outros">Outros</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="message" class="form-label">Mensagem</label>
-                                <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
-                            </div>
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-norte btn-lg">Enviar Mensagem</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+    <div class="row mt-5">
+        <div class="col-12 text-center">
+            <a href="{% url 'todas_noticias' %}" class="btn btn-outline-primary px-4 py-2 rounded-pill fw-bold">
+                Ver Todas as Notícias
+            </a>
         </div>
     </div>
 </section>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* CSS apenas para o efeito de "levantar" o card da notícia */
+    .hover-up {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .hover-up:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.15) !important;
+    }
+</style>
 {% endblock %}

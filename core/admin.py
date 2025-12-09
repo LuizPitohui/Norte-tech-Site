@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CompanySettings, Certification, HomeVideo, ContactMessage, OperatingBase
+from .models import CompanySettings, Certification, HomeVideo, ContactMessage, OperatingBase, Noticia
 
 @admin.register(CompanySettings)
 class CompanySettingsAdmin(admin.ModelAdmin):
@@ -53,3 +53,10 @@ class ContactMessageAdmin(admin.ModelAdmin):
 class OperatingBaseAdmin(admin.ModelAdmin):
     list_display = ('name', 'city', 'phone', 'order')
     list_editable = ('order',)
+
+@admin.register(Noticia)
+class NoticiaAdmin(admin.ModelAdmin):
+    list_display = ('titulo', 'data_criacao')
+    search_fields = ('titulo', 'resumo')
+    # Isso faz a mágica: cria o slug baseado no título automaticamente
+    prepopulated_fields = {"slug": ("titulo",)}

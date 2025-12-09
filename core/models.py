@@ -9,6 +9,7 @@ class CompanySettings(models.Model):
     site_title = models.CharField("Título do Site", max_length=100, default="Norte Tech - Serviços em Energia")
     
     # Institucional
+    about_text = models.TextField("Texto 'Quem Somos'", default="A Norte Tech é referência na prestação de serviços...", help_text="Texto principal da página A Empresa")
     mission = models.TextField("Missão", default="Garantir a satisfação de nossos clientes...", help_text="Texto da página 2 do Portfólio")
     vision = models.TextField("Visão", default="Ser reconhecida como a melhor prestadora...", help_text="Texto da página 2 do Portfólio")
     values = models.TextField("Valores", default="Valorização e respeito à vida; Segurança...", help_text="Texto da página 2 do Portfólio")
@@ -120,3 +121,22 @@ class OperatingBase(models.Model):
     def __str__(self):
         return self.name
     
+class Noticia(models.Model):
+    titulo = models.CharField(max_length=200)
+    # Slug é o que gera a URL amigável (ex: titulo-da-noticia)
+    slug = models.SlugField(unique=True, blank=True, null=True, verbose_name="Link Amigável (Automático)")
+    
+    resumo = models.TextField(max_length=300, help_text="Um breve texto que aparece no card da Home")
+    # Novo campo para o texto completo
+    conteudo = models.TextField("Conteúdo Completo da Notícia")
+    
+    imagem = models.ImageField(upload_to='noticias_img/')
+    data_criacao = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.titulo
+    
+    class Meta:
+        ordering = ['-data_criacao']
+        verbose_name = "Notícia"
+        verbose_name_plural = "Notícias"

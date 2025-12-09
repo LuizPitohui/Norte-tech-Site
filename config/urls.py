@@ -2,26 +2,33 @@ from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from core.views import home, service_detail, about
+# 1. ADICIONEI 'noticia_detail' NA IMPORTAÇÃO ABAIXO
+from core.views import home, service_detail, about, noticia_detail, todas_noticias
 from services.views import ServiceListAPI, service_list
-from careers.views import careers_home, job_apply
+from careers.views import careers_home, job_apply, onboarding_view
 from django.contrib.auth import views as auth_views
 from accounts import views as account_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home, name='home'),
+    
+    # 2. NOVA ROTA DE NOTÍCIAS ADICIONADA AQUI:
+    path('noticias/', todas_noticias, name='todas_noticias'),
+    path('noticias/<slug:slug>/', noticia_detail, name='noticia_detail'),
+
     path('servicos/', service_list, name='services_list'),
     path('servico/<slug:slug>/', service_detail, name='service_detail'),
     path('api/v1/servicos/', ServiceListAPI.as_view(), name='api_services'),
     path('a-empresa/', about, name='about'),
     path('carreiras/', careers_home, name='careers_home'),
+    
     # Rotas de Autenticação
     path('login/', auth_views.LoginView.as_view(template_name='accounts/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
-    path('cadastro/', account_views.register, name='register'), # View customizada
-    path('meu-perfil/', account_views.profile_view, name='profile'), # Painel do Candidato
-    path('carreiras/aplicar/<int:job_id>/', job_apply, name='job_apply'), # <--- Nova rota
+    path('cadastro/', account_views.register, name='register'),
+    path('meu-perfil/', account_views.profile_view, name='profile'),
+    path('carreiras/aplicar/<int:job_id>/', job_apply, name='job_apply'),
 
     # Currículo - Formação
     path('meu-perfil/formacao/adicionar/', account_views.add_education, name='add_education'),
@@ -35,12 +42,13 @@ urlpatterns = [
     path('meu-perfil/curso/adicionar/', account_views.add_course, name='add_course'),
     path('meu-perfil/curso/deletar/<int:pk>/', account_views.delete_course, name='delete_course'),
 
-
+    path('carreiras/documentos/<int:candidate_id>/', onboarding_view, name='onboarding'),
 ]
+
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # Redirecionamento após Login e Logout
-LOGIN_REDIRECT_URL = 'profile'  # Nome da rota que definimos para /meu-perfil/
-LOGOUT_REDIRECT_URL = 'home'    # Volta para a home ao sair
+LOGIN_REDIRECT_URL = 'profile'
+LOGOUT_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'

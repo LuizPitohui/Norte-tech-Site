@@ -1,8 +1,46 @@
-# Exemplo de .gitignore
-node_modules/
-venv/
+# --- Python ---
 __pycache__/
-.env
-.DS_Store
-media/
+*.py[cod]
+*$py.class
+
+# --- Django ---
 *.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# --- Variáveis de Ambiente (Segurança) ---
+.env
+.env.*
+
+# --- Mídia (Uploads de usuários não devem ir para o Git) ---
+media/
+# Exceção: Se quiser manter a estrutura de pastas vazia, descomente abaixo:
+# !media/.gitkeep
+
+# --- Arquivos Estáticos (Gerados pelo collectstatic) ---
+staticfiles/
+# Nota: A pasta 'static' (onde você edita CSS/JS) DEVE ser versionada.
+# Apenas a 'staticfiles' (gerada em produção) é ignorada.
+
+# --- Ambientes Virtuais (Poetry / Venv) ---
+.venv/
+venv/
+env/
+ENV/
+
+# --- IDEs e Editores ---
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# --- Sistema Operacional ---
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# --- Testes e Coverage ---
+htmlcov/
+.coverage
+.pytest_cache/

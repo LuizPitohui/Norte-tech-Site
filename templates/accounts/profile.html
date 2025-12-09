@@ -269,6 +269,14 @@
                                             {% elif app.status == 'BANCO' %}
                                                 <span class="badge bg-secondary">Banco de Talentos</span>
                                             {% endif %}
+
+                                            {% if app.documents.exists %}
+                                                <div class="mt-2">
+                                                    <a href="{% url 'onboarding' app.id %}" class="btn btn-sm btn-warning fw-bold shadow-sm" style="font-size: 0.8rem;">
+                                                        <i class="fas fa-file-upload me-1"></i> Enviar Docs
+                                                    </a>
+                                                </div>
+                                            {% endif %}
                                         </td>
                                         <td class="text-muted small">
                                             {% if app.status == 'BANCO' %}

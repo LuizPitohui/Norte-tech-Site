@@ -1,11 +1,11 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from services.models import Service
-# AQUI ESTAVA O ERRO: Trocamos HomeBanner por HomeVideo
-from .models import Certification, HomeVideo, ContactMessage, OperatingBase
+# Adicione 'Noticia' na importação abaixo
+from .models import Certification, HomeVideo, ContactMessage, OperatingBase, Noticia
 
 def home(request):
-    # Lógica do Formulário de Contato (POST)
+    # Lógica do Formulário de Contato (Mantida)
     if request.method == 'POST':
         name = request.POST.get('name')
         email = request.POST.get('email')
@@ -13,26 +13,31 @@ def home(request):
         subject = request.POST.get('subject')
         message = request.POST.get('message')
         
-        # Salva no banco
         ContactMessage.objects.create(
             name=name, email=email, phone=phone, 
             subject=subject, message=message
         )
-        
-        messages.success(request, 'Sua mensagem foi enviada com sucesso! Entraremos em contato em breve.')
+        messages.success(request, 'Mensagem enviada! Entraremos em contato.')
         return redirect('home')
 
-    # Lógica de Exibição (GET)
+    # --- LÓGICA DE EXIBIÇÃO ---
+    
+    # 1. Vídeo Hero (Destaque)
+    video = HomeVideo.objects.filter(is_active=True).first()
+    
+    # 2. Notícias (Meio - Pegar as 4 últimas)
+    noticias = Noticia.objects.all()[:4] 
+
+    # (Opcional) Se quiser manter serviços e certificações abaixo das notícias, mantenha essas linhas:
     services = Service.objects.filter(is_active=True)[:6]
     certifications = Certification.objects.all()
     
-    # Pega o vídeo ativo (Substituindo a lógica do banner antigo)
-    video = HomeVideo.objects.filter(is_active=True).first()
-    
     return render(request, 'home.html', {
-        'services': services,
+        'video': video,
+        'noticias': noticias,
+        # Opcionais se for usar no resto da página
+        'services': services, 
         'certifications': certifications,
-        'video': video # Passamos 'video' em vez de 'banner'
     })
 
 def service_detail(request, slug):
@@ -52,3 +57,12 @@ def about(request):
         'bases': bases,
         'certifications': certifications
     })
+
+def noticia_detail(request, slug):
+    noticia = get_object_or_404(Noticia, slug=slug)
+    return render(request, 'noticia_detail.html', {'noticia': noticia})
+
+def todas_noticias(request):
+    # Busca todas as notícias ordenadas da mais recente para a antiga
+    noticias = Noticia.objects.all()
+    return render(request, 'todas_noticias.html', {'noticias': noticias})
