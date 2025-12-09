@@ -28,7 +28,9 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-norte-blue py-3 fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="/">NORTE TECH</a>
+            <a class="navbar-brand py-0" href="/">
+                <img src="{% static 'img/logo.png' %}" alt="Norte Tech" height="50">
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -37,12 +39,7 @@
                     <li class="nav-item"><a class="nav-link text-white" href="/">Home</a></li>
                     <li class="nav-item"><a class="nav-link text-white" href="{% url 'about' %}">A Empresa</a></li>
                     <li class="nav-item"><a class="nav-link text-white" href="{% url 'services_list' %}">Serviços</a></li>
-                    <li class="nav-item"><a class="nav-link text-white" href="#contact">Contato</a></li>
-                    {% if company_settings.instagram %}
-                    <li class="nav-item ms-3">
-                        <a href="{{ company_settings.instagram }}" target="_blank" class="btn btn-norte btn-sm rounded-circle"><i class="fab fa-instagram"></i></a>
-                    </li>
-                    {% endif %}
+                    <li class="nav-item"><a class="nav-link text-white" href="{% url 'contato_page' %}">Contato</a></li>
                 </ul>
             </div>
         </div>
@@ -130,7 +127,7 @@
                 <div class="col-md-5 col-lg-4">
                     <div class="text-center text-md-end">
                         <ul class="list-unstyled list-inline mb-0 small">
-                            <li class="list-inline-item"><a href="#" class="text-white-50 text-decoration-none">Privacidade</a></li>
+                            <li class="list-inline-item"><a href="{% url 'privacidade' %}" class="text-white-50 text-decoration-none">Privacidade</a></li>
                             <li class="list-inline-item"><span class="text-white-50 mx-2">|</span></li>
                             <li class="list-inline-item"><a href="#" class="text-white-50 text-decoration-none">Termos</a></li>
                         </ul>

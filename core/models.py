@@ -80,28 +80,6 @@ class HomeVideo(models.Model):
         if self.is_active:
             HomeVideo.objects.filter(is_active=True).exclude(pk=self.pk).update(is_active=False)
         super(HomeVideo, self).save(*args, **kwargs)
-
-
-class ContactMessage(models.Model):
-    """
-    Salva as mensagens enviadas pelo formulário de contato do site.
-    """
-    name = models.CharField("Nome", max_length=100)
-    email = models.EmailField("E-mail")
-    phone = models.CharField("Telefone", max_length=20, blank=True)
-    subject = models.CharField("Assunto", max_length=100)
-    message = models.TextField("Mensagem")
-    
-    created_at = models.DateTimeField("Enviado em", auto_now_add=True)
-    is_read = models.BooleanField("Lido?", default=False)
-
-    class Meta:
-        verbose_name = "Mensagem de Contato"
-        verbose_name_plural = "Mensagens de Contato"
-        ordering = ['-created_at']
-
-    def __str__(self):
-        return f"{self.name} - {self.subject}"
     
 class OperatingBase(models.Model):
     name = models.CharField("Nome da Base", max_length=100, help_text="Ex: Base Ponta Negra")
@@ -140,3 +118,32 @@ class Noticia(models.Model):
         ordering = ['-data_criacao']
         verbose_name = "Notícia"
         verbose_name_plural = "Notícias"
+
+# ... (mantenha todo o código que já existe acima)
+
+class CanalContato(models.Model):
+    """
+    Canais de atendimento listados na página de contato.
+    Ex: Disk Denúncias, Trabalhe Conosco (Email), Comercial.
+    """
+    TIPO_CHOICES = [
+        ('EMAIL', 'E-mail'),
+        ('TELEFONE', 'Telefone'),
+        ('WHATSAPP', 'WhatsApp'),
+        ('LINK', 'Link Externo'),
+    ]
+
+    titulo = models.CharField("Título do Canal", max_length=100, help_text="Ex: Disk Denúncias")
+    conteudo = models.CharField("Contato", max_length=200, help_text="O e-mail, número ou link.")
+    tipo = models.CharField("Tipo", max_length=20, choices=TIPO_CHOICES)
+    icone = models.CharField("Ícone (FontAwesome)", max_length=50, default="fas fa-envelope", help_text="Ex: fas fa-phone, fab fa-whatsapp")
+    
+    ordem = models.IntegerField("Ordem", default=0)
+
+    class Meta:
+        verbose_name = "Canal de Contato"
+        verbose_name_plural = "Canais de Contato"
+        ordering = ['ordem']
+
+    def __str__(self):
+        return self.titulo

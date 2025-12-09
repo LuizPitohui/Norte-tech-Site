@@ -125,6 +125,9 @@ USE_TZ = True
 # Configuração de Arquivos Estáticos e Mídia (Essencial para fotos da frota e serviços)
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

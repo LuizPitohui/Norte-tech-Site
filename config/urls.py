@@ -3,7 +3,7 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 # 1. ADICIONEI 'noticia_detail' NA IMPORTAÇÃO ABAIXO
-from core.views import home, service_detail, about, noticia_detail, todas_noticias
+from core.views import home, service_detail, about, noticia_detail, todas_noticias, contato, privacidade
 from services.views import ServiceListAPI, service_list
 from careers.views import careers_home, job_apply, onboarding_view
 from django.contrib.auth import views as auth_views
@@ -16,12 +16,13 @@ urlpatterns = [
     # 2. NOVA ROTA DE NOTÍCIAS ADICIONADA AQUI:
     path('noticias/', todas_noticias, name='todas_noticias'),
     path('noticias/<slug:slug>/', noticia_detail, name='noticia_detail'),
-
+    path('privacidade/', privacidade, name='privacidade'),
     path('servicos/', service_list, name='services_list'),
     path('servico/<slug:slug>/', service_detail, name='service_detail'),
     path('api/v1/servicos/', ServiceListAPI.as_view(), name='api_services'),
     path('a-empresa/', about, name='about'),
     path('carreiras/', careers_home, name='careers_home'),
+    path('fale-conosco/', contato, name='contato_page'),
     
     # Rotas de Autenticação
     path('login/', auth_views.LoginView.as_view(template_name='accounts/login.html'), name='login'),

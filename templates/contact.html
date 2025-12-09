@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block title %}Fale Conosco{% endblock %}
+
+{% block content %}
+
+<div class="bg-norte-blue text-white py-5">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold">Fale Conosco</h1>
+        <p class="lead">Canais oficiais de atendimento da Norte Tech.</p>
+    </div>
+</div>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        
+        <div class="col-lg-8">
+            
+            <div class="text-center mb-4">
+                <h3 class="text-norte-blue fw-bold">Nossos Contatos</h3>
+                <p class="text-muted">Selecione o canal mais adequado para sua necessidade.</p>
+            </div>
+            
+            <div class="list-group shadow-sm mb-5">
+                {% for canal in canais %}
+                <div class="list-group-item list-group-item-action p-4 border-0 mb-2 rounded bg-light hover-effect">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-white p-3 rounded-circle shadow-sm me-4 text-norte-blue d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                            <i class="{{ canal.icone }} fa-lg"></i>
+                        </div>
+                        
+                        <div class="flex-grow-1">
+                            <h5 class="fw-bold mb-1 text-dark">{{ canal.titulo }}</h5>
+                            
+                            {% if canal.tipo == 'EMAIL' %}
+                                <a href="mailto:{{ canal.conteudo }}" class="text-decoration-none text-muted fs-5">{{ canal.conteudo }}</a>
+                            {% elif canal.tipo == 'TELEFONE' %}
+                                <a href="tel:{{ canal.conteudo }}" class="text-decoration-none text-muted fs-5">{{ canal.conteudo }}</a>
+                            {% elif canal.tipo == 'WHATSAPP' %}
+                                <a href="https://wa.me/55{{ canal.conteudo|cut:' '|cut:'-'|cut:'('|cut:')' }}" target="_blank" class="text-success fw-bold fs-5">
+                                    <i class="fab fa-whatsapp me-1"></i> Iniciar Conversa
+                                </a>
+                            {% else %}
+                                <a href="{{ canal.conteudo }}" target="_blank" class="text-primary fw-bold">Acessar Link Externo <i class="fas fa-external-link-alt ms-1"></i></a>
+                            {% endif %}
+                        </div>
+
+                        <div class="text-muted opacity-25 d-none d-md-block">
+                            <i class="fas fa-chevron-right fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center py-5 text-muted">
+                    <i class="fas fa-address-book fa-3x mb-3"></i>
+                    <p>Nenhum canal cadastrado no momento.</p>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="card border-0 bg-norte-blue text-white shadow">
+                <div class="card-body p-4 text-center">
+                    <h5 class="fw-bold mb-3"><i class="fas fa-map-marker-alt me-2 text-warning"></i> Matriz Administrativa</h5>
+                    <p class="mb-0 lead fs-6">{{ company_settings.address }}</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Pequeno efeito ao passar o mouse no contato */
+    .hover-effect {
+        transition: transform 0.2s ease, background-color 0.2s;
+    }
+    .hover-effect:hover {
+        transform: translateX(5px);
+        background-color: #f8f9fa !important; /* Mantém cinza claro */
+        border-left: 5px solid var(--norte-yellow) !important;
+    }
+</style>
+{% endblock %}

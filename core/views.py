@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from services.models import Service
 # Adicione 'Noticia' na importação abaixo
-from .models import Certification, HomeVideo, ContactMessage, OperatingBase, Noticia
+from .models import Certification, HomeVideo, OperatingBase, Noticia, CanalContato
 
 def home(request):
     # Lógica do Formulário de Contato (Mantida)
@@ -66,3 +66,14 @@ def todas_noticias(request):
     # Busca todas as notícias ordenadas da mais recente para a antiga
     noticias = Noticia.objects.all()
     return render(request, 'todas_noticias.html', {'noticias': noticias})
+
+def contato(request):
+    # Lógica de Exibição (Apenas busca os canais para mostrar)
+    canais = CanalContato.objects.all()
+    
+    return render(request, 'contact.html', {
+        'canais': canais
+    })
+
+def privacidade(request):
+    return render(request, 'privacidade.html')

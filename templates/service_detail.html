@@ -7,7 +7,7 @@
     <div class="container">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-warning text-decoration-none">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'services_list' %}" class="text-warning text-decoration-none">Voltar</a></li>
                 <li class="breadcrumb-item active text-white" aria-current="page">{{ service.category.name }}</li>
             </ol>
         </nav>
@@ -39,7 +39,7 @@
                 <div class="card-body bg-light">
                     <h5 class="card-title fw-bold text-norte-blue">Precisa deste serviço?</h5>
                     <p class="card-text">Nossa equipe técnica está pronta para atender demandas de {{ service.title|lower }}.</p>
-                    <a href="#contact" class="btn btn-norte w-100 mb-2">Solicitar Orçamento</a>
+                    <a href="{% url 'contato_page' %}" class="btn btn-norte w-100 mb-2">Solicitar Orçamento</a>
                     
                     {% if company_settings.phone %}
                     <div class="mt-3 text-center">
@@ -56,7 +56,7 @@
                 <a href="#" class="list-group-item list-group-item-action active bg-norte-blue border-0">
                     Outros Serviços
                 </a>
-                <a href="{% url 'home' %}" class="list-group-item list-group-item-action">Ver todos os serviços</a>
+                <a href="{% url 'services_list' %}" class="list-group-item list-group-item-action">Ver todos os serviços</a>
             </div>
         </div>
     </div>
