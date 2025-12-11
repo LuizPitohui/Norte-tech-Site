@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from .models import CandidateProfile
 from .forms import UserRegisterForm, CandidateProfileForm, EducationForm, ExperienceForm, CourseForm
 from careers.models import Candidate
+
+@login_required
 def register(request):
     """
     Registra um novo usuário e cria seu perfil de candidato simultaneamente.
@@ -46,12 +48,16 @@ def register(request):
         'profile_form': profile_form
     })
 
+@login_required # <--- Adicione esta linha!
 def profile_view(request):
     """
     Dashboard do Candidato: Perfil + Histórico de Vagas.
+    Protegido: Só usuários logados acessam.
     """
+    # Agora o request.user sempre será um usuário real, nunca Anônimo
     profile, created = CandidateProfile.objects.get_or_create(user=request.user)
     
+    # ... (o resto da função continua igual) ...
     my_applications = Candidate.objects.filter(email=request.user.email).order_by('-sent_at')
 
     if request.method == 'POST':
@@ -61,10 +67,8 @@ def profile_view(request):
             messages.success(request, 'Seus dados foram atualizados com sucesso!')
             return redirect('profile')
         else:
-            # --- DEBUG NO TERMINAL ---
             print("❌ ERRO DE VALIDAÇÃO DO FORMULÁRIO:")
             print(form.errors)
-            # -------------------------
             messages.error(request, 'Erro ao atualizar. Verifique os campos em vermelho abaixo.')
     else:
         form = CandidateProfileForm(instance=profile)

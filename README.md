@@ -39,9 +39,8 @@ O sistema foi construído utilizando **Django 6.0** e **Python 3.14**, com foco 
 ## ⚙️ Como Rodar o Projeto Localmente
 
 ### Pré-requisitos
-* Python 3.14+ instalado.
-* [Poetry](https://python-poetry.org/) instalado.
-
+* Python 3.14+
+* [Poetry](https://python-poetry.org/)
 ### Passo a Passo
 
 1.  **Clone o repositório:**

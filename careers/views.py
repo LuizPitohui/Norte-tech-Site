@@ -12,6 +12,13 @@ def careers_home(request):
     jobs = JobOpportunity.objects.filter(is_active=True)
     return render(request, 'careers_home.html', {'jobs': jobs})
 
+def job_detail(request, job_id):
+    """
+    Exibe os detalhes completos de uma vaga.
+    """
+    job = get_object_or_404(JobOpportunity, id=job_id, is_active=True)
+    return render(request, 'careers_job_detail.html', {'job': job})
+
 @login_required
 def job_apply(request, job_id):
     """

@@ -5,12 +5,15 @@ from django.conf.urls.static import static
 # 1. ADICIONEI 'noticia_detail' NA IMPORTAÇÃO ABAIXO
 from core.views import home, service_detail, about, noticia_detail, todas_noticias, contato, privacidade
 from services.views import ServiceListAPI, service_list
-from careers.views import careers_home, job_apply, onboarding_view
+from careers.views import careers_home, job_apply, onboarding_view, job_detail
 from django.contrib.auth import views as auth_views
 from accounts import views as account_views
+from careers.admin_rh import rh_admin
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # Painel Exclusivo RH (Admissão Digital)
+    path('rh/', rh_admin.urls),
     path('', home, name='home'),
     
     # 2. NOVA ROTA DE NOTÍCIAS ADICIONADA AQUI:
@@ -30,6 +33,7 @@ urlpatterns = [
     path('cadastro/', account_views.register, name='register'),
     path('meu-perfil/', account_views.profile_view, name='profile'),
     path('carreiras/aplicar/<int:job_id>/', job_apply, name='job_apply'),
+    path('carreiras/vaga/<int:job_id>/', job_detail, name='job_detail'),
 
     # Currículo - Formação
     path('meu-perfil/formacao/adicionar/', account_views.add_education, name='add_education'),
