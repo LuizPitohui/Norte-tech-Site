@@ -2,18 +2,50 @@ from django.contrib import admin
 from django.contrib.admin import AdminSite
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
-from django.db.models import Count
+from django.db.models import Count , Q
+from django.template.response import TemplateResponse
 from .models import JobOpportunity, Candidate, DocumentType, CandidateDocument
 
 class HRAdminSite(AdminSite):
     site_header = "Norte Tech - Admissão Digital"
     site_title = "Portal do RH"
     index_title = "Gestão de Processos Seletivos"
+    index_template = 'admin/rh_dashboard.html'
     
-    def has_permission(self, request):
-        # Define que apenas usuários ativos e 'staff' podem acessar
-        # Posteriormente podemos filtrar por um grupo específico "RH" aqui
-        return request.user.is_active and request.user.is_staff
+    # Customizando a página inicial (Dashboard)
+    def index(self, request, extra_context=None):
+        # 1. Coletar Métricas Básicas
+        total_vagas_abertas = JobOpportunity.objects.filter(is_active=True).count()
+        total_candidatos = Candidate.objects.count()
+        total_banco_talentos = Candidate.objects.filter(job__isnull=True).count() # Vaga vazia = Banco
+        
+        # 2. Funil de Seleção (Quantos em cada fase)
+        # Usamos 'aggregate' para contar rapidinho
+        funil = Candidate.objects.aggregate(
+            novos=Count('id', filter=Q(status='NOVO')),
+            entrevista=Count('id', filter=Q(status='ENTREVISTA')),
+            admissao=Count('id', filter=Q(status__in=['AGUARDANDO_DOCS', 'DOCS_EM_ANALISE'])),
+            contratados=Count('id', filter=Q(status='CONTRATADO')),
+        )
+
+        # 3. Vagas com mais candidatos (Top 5)
+        top_vagas = JobOpportunity.objects.filter(is_active=True).annotate(
+            num_cand=Count('candidates')
+        ).order_by('-num_cand')[:5]
+
+        # Passa esses dados para o template
+        context = {
+            'metricas': {
+                'vagas_abertas': total_vagas_abertas,
+                'total_candidatos': total_candidatos,
+                'banco_talentos': total_banco_talentos,
+                'funil': funil,
+                'top_vagas': top_vagas,
+            }
+        }
+        # Junta com o contexto padrão do admin (lista de apps)
+        context.update(extra_context or {})
+        return super().index(request, context)
 
 # Instância do Painel de RH (Isolado do Admin principal)
 rh_admin = HRAdminSite(name='rh_admin')

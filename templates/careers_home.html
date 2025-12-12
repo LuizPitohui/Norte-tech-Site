@@ -22,43 +22,56 @@
         {% endfor %}
     {% endif %}
 
-    <div class="row">
-        {% for job in jobs %}
-        <div class="col-md-6 mb-4">
-            <div class="card h-100 shadow-sm border-0 hover-up">
-                <div class="card-body p-4 d-flex flex-column">
-                    <div class="d-flex justify-content-between align-items-start mb-3">
-                        <span class="badge bg-light text-dark border">{{ job.get_department_display }}</span>
-                        <small class="text-muted">{{ job.created_at|date:"d/m/Y" }}</small>
+    <div class="row g-4">
+        
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm hover-up bg-norte-blue text-white">
+                <div class="card-body p-4 d-flex flex-column text-center justify-content-center">
+                    <div class="mb-3">
+                        <i class="fas fa-users fa-3x text-warning"></i>
                     </div>
-                    
-                    <h4 class="card-title fw-bold text-norte-blue mb-2">
-                        <a href="{% url 'job_detail' job.id %}" class="text-decoration-none text-norte-blue">{{ job.title }}</a>
-                    </h4>
-                    
-                    <p class="text-muted small mb-3"><i class="fas fa-map-marker-alt me-1"></i> {{ job.location }}</p>
-                    
-                    <p class="card-text text-muted flex-grow-1">
-                        {{ job.description|linebreaks|truncatewords:20 }}
+                    <h4 class="card-title fw-bold mb-2">Banco de Talentos</h4>
+                    <p class="card-text text-white-50 flex-grow-1">
+                        Não encontrou a vaga ideal? Cadastre seu currículo e entraremos em contato quando surgir uma oportunidade.
                     </p>
-                    
                     <div class="mt-3">
-                        <a href="{% url 'job_detail' job.id %}" class="btn btn-outline-primary w-100 fw-bold">
-                            Ver Detalhes da Vaga
+                        <a href="{% url 'talent_bank' %}" class="btn btn-warning fw-bold w-100 text-dark">
+                            Cadastrar Currículo
                         </a>
                     </div>
                 </div>
             </div>
         </div>
-        {% empty %}
-        <div class="col-12 text-center py-5">
-            <div class="text-muted">
-                <i class="fas fa-search fa-3x mb-3"></i>
-                <h4>Nenhuma vaga aberta no momento.</h4>
-                <p>Mantenha seu <a href="{% url 'profile' %}">currículo atualizado</a> para futuras oportunidades.</p>
+
+        {% for job in jobs %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm hover-up">
+                <div class="card-body p-4 d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <span class="badge bg-light text-dark border">{{ job.get_department_display }}</span>
+                        <small class="text-muted">{{ job.created_at|date:"d/m" }}</small>
+                    </div>
+                    
+                    <h5 class="card-title fw-bold text-norte-blue mb-2">
+                        <a href="{% url 'job_detail' job.id %}" class="text-decoration-none text-norte-blue">{{ job.title }}</a>
+                    </h5>
+                    
+                    <p class="text-muted small mb-3"><i class="fas fa-map-marker-alt me-1"></i> {{ job.location }}</p>
+                    
+                    <p class="card-text text-muted small flex-grow-1">
+                        {{ job.description|truncatewords:15 }}
+                    </p>
+                    
+                    <div class="mt-3">
+                        <a href="{% url 'job_detail' job.id %}" class="btn btn-outline-primary w-100 fw-bold btn-sm">
+                            Ver Vaga
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
         {% endfor %}
+
     </div>
 </div>
 

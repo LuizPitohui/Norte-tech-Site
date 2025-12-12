@@ -1,6 +1,6 @@
 from django.contrib import admin
 # Adicionei 'CompanySettings' na lista de imports abaixo para corrigir o próximo erro
-from .models import CompanySettings, Certification, HomeVideo, OperatingBase, Noticia, CanalContato
+from .models import CompanySettings, Certification, HomeVideo, OperatingBase, Noticia, CanalContato, CarouselImage
 class CompanySettingsAdmin(admin.ModelAdmin):
     """
     Configuração Global: Impede que o usuário delete a configuração principal
@@ -51,3 +51,7 @@ class CanalContatoAdmin(admin.ModelAdmin):
     list_display = ('titulo', 'conteudo', 'tipo', 'ordem')
     list_editable = ('ordem',)
 
+@admin.register(CarouselImage)
+class CarouselImageAdmin(admin.ModelAdmin):
+    list_display = ('title', 'order', 'is_active')
+    list_editable = ('order', 'is_active')

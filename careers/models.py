@@ -19,6 +19,9 @@ class JobOpportunity(models.Model):
     
     salary_range = models.CharField("Faixa Salarial", max_length=100, blank=True, help_text="Opcional")
     
+    # --- NOVO CAMPO: Número de Vagas ---
+    vacancies = models.PositiveIntegerField("Número de Vagas", default=1, help_text="Quantas posições estão abertas")
+    
     is_active = models.BooleanField("Vaga Aberta?", default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -45,17 +48,24 @@ class Candidate(models.Model):
     resume_file = models.FileField("Currículo (PDF/DOC)", upload_to="resumes/%Y/%m/") # Organiza por ano/mês
     message = models.TextField("Mensagem/Apresentação", blank=True)
     
-    # Controle do RH
+    # Controle do RH (Status Atualizados para Admissão Digital)
     STATUS_CHOICES = [
         ('NOVO', 'Novo Recebido'),
         ('ANALISE', 'Em Análise'),
         ('ENTREVISTA', 'Entrevista Agendada'),
-        ('APROVADO', 'Aprovado'),
-        ('REPROVADO', 'Reprovado'),
         ('BANCO', 'Banco de Talentos'),
+        ('REPROVADO', 'Reprovado'),
+        # Novos Status de Admissão:
+        ('AGUARDANDO_DOCS', 'Aprovado - Aguardando Documentos'),
+        ('DOCS_EM_ANALISE', 'Documentos em Análise'),
+        ('CONTRATADO', 'Contratado'),
     ]
     status = models.CharField("Status do Processo", max_length=20, choices=STATUS_CHOICES, default='NOVO')
     hr_notes = models.TextField("Anotações do RH", blank=True, help_text="Interno - Candidato não vê")
+    
+    # --- NOVOS CAMPOS: Termos e LGPD ---
+    terms_accepted = models.BooleanField("Aceitou Termos/LGPD?", default=False)
+    terms_accepted_at = models.DateTimeField("Data do Aceite", null=True, blank=True)
     
     sent_at = models.DateTimeField("Enviado em", auto_now_add=True)
 

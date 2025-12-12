@@ -55,8 +55,16 @@
                     <p class="small text-muted mb-4">Leia atentamente os requisitos e clique abaixo para enviar seu perfil automaticamente.</p>
 
                     {% if user.is_authenticated %}
-                        <form action="{% url 'job_apply' job.id %}" method="POST" onsubmit="return confirm('Confirmar candidatura para {{ job.title }}?');">
+                        <form action="{% url 'job_apply' job.id %}" method="POST">
                             {% csrf_token %}
+                            
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" name="lgpd_check" id="lgpdCheckVaga" required>
+                                <label class="form-check-label small text-muted" for="lgpdCheckVaga">
+                                    Li e aceito a <a href="{% url 'privacidade' %}" target="_blank">Política de Privacidade</a> e autorizo o uso dos meus dados.
+                                </label>
+                            </div>
+
                             <button type="submit" class="btn btn-norte w-100 fw-bold py-3 shadow-sm">
                                 <i class="fas fa-paper-plane me-2"></i> QUERO ME CANDIDATAR
                             </button>

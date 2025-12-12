@@ -34,12 +34,6 @@
                     <a href="#courses" class="list-group-item list-group-item-action">
                         <i class="fas fa-certificate me-2"></i> Cursos
                     </a>
-                    <a href="#applications" class="list-group-item list-group-item-action">
-                        <i class="fas fa-history me-2"></i> Minhas Candidaturas
-                        {% if my_applications %}
-                            <span class="badge bg-danger rounded-pill float-end">{{ my_applications.count }}</span>
-                        {% endif %}
-                    </a>
                     <a href="{% url 'careers_home' %}" class="list-group-item list-group-item-action fw-bold text-warning bg-dark mt-2">
                         <i class="fas fa-search me-2"></i> Ver Vagas
                     </a>

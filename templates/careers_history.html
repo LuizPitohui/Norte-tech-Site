@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block title %}Minhas Candidaturas - Norte Tech{% endblock %}
+
+{% block content %}
+
+<div class="bg-norte-blue text-white py-5">
+    <div class="container text-center">
+        <h2 class="fw-bold mb-2">Portal do Candidato</h2>
+        <p class="text-white-50">Acompanhe o andamento dos seus processos seletivos.</p>
+    </div>
+</div>
+
+<div class="bg-light py-5" style="min-height: 80vh;">
+    <div class="container">
+        <div class="row justify-content-center">
+            
+            <div class="col-lg-10">
+                
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="fw-bold text-norte-blue mb-0"><i class="fas fa-history me-2"></i> Histórico de Processos</h4>
+                    <a href="{% url 'careers_home' %}" class="btn btn-outline-primary btn-sm rounded-pill">
+                        <i class="fas fa-plus me-1"></i> Ver Mais Vagas
+                    </a>
+                </div>
+
+                {% for cand in candidaturas %}
+                <div class="card border-0 shadow-sm mb-4 overflow-hidden">
+                    <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center border-bottom">
+                        <div>
+                            <h5 class="mb-0 fw-bold text-norte-blue">
+                                {% if cand.job %}
+                                    {{ cand.job.title }}
+                                {% else %}
+                                    <i class="fas fa-database me-1 text-muted"></i> Banco de Talentos
+                                {% endif %}
+                            </h5>
+                            {% if cand.job %}
+                                <small class="text-muted">{{ cand.job.department }}</small>
+                            {% endif %}
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-light text-dark border">{{ cand.sent_at|date:"d/m/Y" }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card-body p-4">
+                        <div class="position-relative mx-3 my-4">
+                            <div class="progress" style="height: 4px;">
+                                <div class="progress-bar bg-success" role="progressbar" style="width: 
+                                    {% if cand.status == 'NOVO' %}10%
+                                    {% elif cand.status == 'ANALISE' %}35%
+                                    {% elif cand.status == 'ENTREVISTA' %}60%
+                                    {% elif cand.status == 'AGUARDANDO_DOCS' or cand.status == 'DOCS_EM_ANALISE' %}85%
+                                    {% elif cand.status == 'CONTRATADO' %}100%
+                                    {% else %}0%{% endif %};">
+                                </div>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between position-absolute top-0 start-0 w-100 translate-middle-y">
+                                <div class="bg-success rounded-circle text-white d-flex align-items-center justify-content-center shadow-sm" style="width: 32px; height: 32px;" title="Inscrito">
+                                    <i class="fas fa-check small"></i>
+                                </div>
+                                <div class="{% if cand.status != 'NOVO' %}bg-success text-white{% else %}bg-secondary text-white-50{% endif %} rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 32px; height: 32px;" title="Em Análise">
+                                    <i class="fas fa-search small"></i>
+                                </div>
+                                <div class="{% if cand.status in 'AGUARDANDO_DOCS,DOCS_EM_ANALISE,CONTRATADO' %}bg-success text-white{% else %}bg-secondary text-white-50{% endif %} rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 32px; height: 32px;" title="Admissão">
+                                    <i class="fas fa-file-upload small"></i>
+                                </div>
+                                <div class="{% if cand.status == 'CONTRATADO' %}bg-success text-white{% else %}bg-secondary text-white-50{% endif %} rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 32px; height: 32px;" title="Contratado">
+                                    <i class="fas fa-star small"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-5 text-center bg-light p-4 rounded border-start border-4 
+                            {% if cand.status == 'AGUARDANDO_DOCS' %}border-warning{% elif cand.status == 'CONTRATADO' %}border-success{% else %}border-secondary{% endif %}">
+                            
+                            <h6 class="text-uppercase fw-bold text-muted small mb-2">Status Atual</h6>
+                            
+                            {% if cand.status == 'REPROVADO' %}
+                                <span class="badge bg-danger fs-6 px-3 py-2">Processo Encerrado</span>
+                                <p class="small text-muted mt-2 mb-0">Agradecemos seu interesse, mas não seguiremos com sua candidatura.</p>
+                            
+                            {% elif cand.status == 'BANCO' %}
+                                <span class="badge bg-info text-dark fs-6 px-3 py-2">Banco de Talentos</span>
+                                <p class="small text-muted mt-2 mb-0">Seu perfil está salvo para futuras oportunidades.</p>
+
+                            {% elif cand.status == 'AGUARDANDO_DOCS' %}
+                                <span class="badge bg-warning text-dark fs-6 px-3 py-2 animation-pulse">⚠ Aguardando Documentos</span>
+                                <div class="mt-3">
+                                    <p class="mb-2 fw-bold text-norte-blue">Você avançou! Envie seus documentos:</p>
+                                    <a href="{% url 'onboarding' cand.id %}" class="btn btn-success fw-bold shadow-sm px-4">
+                                        <i class="fas fa-file-upload me-2"></i> ENVIAR AGORA
+                                    </a>
+                                </div>
+
+                            {% elif cand.status == 'DOCS_EM_ANALISE' %}
+                                <span class="badge bg-primary fs-6 px-3 py-2">Documentos em Análise</span>
+                                <p class="small text-muted mt-2">O RH está conferindo seus arquivos.</p>
+                                <a href="{% url 'onboarding' cand.id %}" class="btn btn-outline-primary btn-sm mt-1">Verificar Arquivos</a>
+
+                            {% elif cand.status == 'CONTRATADO' %}
+                                <span class="badge bg-success fs-6 px-3 py-2">🎉 Contratado!</span>
+                                <p class="small text-muted mt-2 mb-0">Bem-vindo à Norte Tech! Aguarde o contato do RH.</p>
+
+                            {% else %}
+                                <span class="badge bg-secondary fs-6 px-3 py-2">{{ cand.get_status_display }}</span>
+                                <p class="small text-muted mt-2 mb-0">Nosso time está analisando seu perfil.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center py-5">
+                    <div class="mb-3 text-muted">
+                        <i class="far fa-folder-open fa-3x"></i>
+                    </div>
+                    <h5>Nenhuma candidatura encontrada.</h5>
+                    <p class="text-muted">Explore nossas vagas e faça parte do time.</p>
+                    <a href="{% url 'careers_home' %}" class="btn btn-norte mt-2">Ver Vagas Abertas</a>
+                </div>
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .animation-pulse {
+        animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+</style>
+{% endblock %}

@@ -63,7 +63,7 @@ class HomeVideo(models.Model):
     """
     title = models.CharField("Título de Identificação", max_length=100, help_text="Apenas para controle interno (ex: Vídeo Institucional 2025)")
     video_file = models.FileField("Arquivo de Vídeo (MP4)", upload_to="videos_home/")
-    
+    overlay_text = models.TextField("Texto da Capa (Blur)", blank=True, help_text="Texto que aparece sobre o vídeo antes de dar play.")
     is_active = models.BooleanField("Ativo no Site?", default=True, help_text="Se marcar este, os outros vídeos serão desativados automaticamente.")
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -147,3 +147,19 @@ class CanalContato(models.Model):
 
     def __str__(self):
         return self.titulo
+
+class CarouselImage(models.Model):
+    title = models.CharField("Título (Opcional)", max_length=100, blank=True)
+    description = models.CharField("Descrição/Subtítulo (Opcional)", max_length=200, blank=True)
+    image = models.ImageField("Imagem do Banner", upload_to="carousel/%Y/%m/")
+    order = models.IntegerField("Ordem de Exibição", default=0)
+    is_active = models.BooleanField("Ativo?", default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Imagem do Carrossel"
+        verbose_name_plural = "Carrossel da Home"
+        ordering = ['order', '-created_at']
+
+    def __str__(self):
+        return self.title if self.title else f"Banner #{self.id}"

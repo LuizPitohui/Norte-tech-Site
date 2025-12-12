@@ -1,41 +1,29 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from services.models import Service
-# Adicione 'Noticia' na importação abaixo
-from .models import Certification, HomeVideo, OperatingBase, Noticia, CanalContato
+# 1. ADICIONEI 'CarouselImage' NA IMPORTAÇÃO ABAIXO
+from .models import Certification, HomeVideo, OperatingBase, Noticia, CanalContato, CarouselImage
 
 def home(request):
-    # Lógica do Formulário de Contato (Mantida)
-    if request.method == 'POST':
-        name = request.POST.get('name')
-        email = request.POST.get('email')
-        phone = request.POST.get('phone')
-        subject = request.POST.get('subject')
-        message = request.POST.get('message')
-        
-        ContactMessage.objects.create(
-            name=name, email=email, phone=phone, 
-            subject=subject, message=message
-        )
-        messages.success(request, 'Mensagem enviada! Entraremos em contato.')
-        return redirect('home')
-
     # --- LÓGICA DE EXIBIÇÃO ---
     
-    # 1. Vídeo Hero (Destaque)
-    video = HomeVideo.objects.filter(is_active=True).first()
-    
+    # 1. Carrossel de Imagens (Topo) - NOVO
+    carousel_images = CarouselImage.objects.filter(is_active=True)
+
     # 2. Notícias (Meio - Pegar as 4 últimas)
     noticias = Noticia.objects.all()[:4] 
 
-    # (Opcional) Se quiser manter serviços e certificações abaixo das notícias, mantenha essas linhas:
+    # 3. Vídeo Hero (Fim)
+    video = HomeVideo.objects.filter(is_active=True).first()
+    
+    # 4. Outros elementos (Serviços e Certificações)
     services = Service.objects.filter(is_active=True)[:6]
     certifications = Certification.objects.all()
     
     return render(request, 'home.html', {
-        'video': video,
+        'carousel_images': carousel_images, # <--- Enviando para o template
         'noticias': noticias,
-        # Opcionais se for usar no resto da página
+        'video': video,
         'services': services, 
         'certifications': certifications,
     })
@@ -50,7 +38,6 @@ def service_detail(request, slug):
 
 def about(request):
     bases = OperatingBase.objects.all()
-    # Podemos reutilizar as certificações aqui também se quiser
     certifications = Certification.objects.all()
     
     return render(request, 'about.html', {

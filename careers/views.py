@@ -92,3 +92,91 @@ def onboarding_view(request, candidate_id):
         'candidate': candidate,
         'documents': documents
     })
+
+@login_required
+def candidate_history(request):
+    """
+    Mostra o histórico de candidaturas do usuário logado.
+    """
+    # Pega todas as candidaturas deste usuário (pelo email)
+    candidaturas = Candidate.objects.filter(email=request.user.email).order_by('-sent_at')
+    
+    return render(request, 'careers_history.html', {
+        'candidaturas': candidaturas
+    })
+
+@login_required
+def candidate_history(request):
+    candidaturas = Candidate.objects.filter(email=request.user.email).order_by('-sent_at')
+    return render(request, 'careers_history.html', {'candidaturas': candidaturas})
+
+@login_required
+def job_apply(request, job_id=None):
+    """
+    Processa a candidatura. 
+    Se job_id existir -> Aplica para a vaga.
+    Se job_id for None -> Aplica para o Banco de Talentos.
+    """
+    if request.method == 'POST':
+        # 1. Verifica Aceite da LGPD
+        terms_accepted = request.POST.get('lgpd_check') == 'on'
+        
+        if not terms_accepted:
+            messages.error(request, "Você precisa aceitar os Termos de Uso e LGPD para continuar.")
+            # Redireciona de volta para onde veio
+            if job_id:
+                return redirect('job_detail', job_id=job_id)
+            else:
+                return redirect('talent_bank')
+
+        # 2. Identifica a Vaga (se houver)
+        job = None
+        if job_id:
+            job = get_object_or_404(JobOpportunity, id=job_id)
+
+        # 3. Verifica se já se candidatou recentemente (Evitar duplicidade)
+        # Se for vaga específica, verifica aquela vaga. Se for banco, verifica se já está no banco.
+        existing = Candidate.objects.filter(
+            email=request.user.email, 
+            job=job,
+            # Se for banco de talentos (job=None), verifica status 'BANCO' ou 'NOVO'
+        ).exists()
+        
+        if existing and job:
+            messages.warning(request, f"Você já se candidatou para {job.title} recentemente.")
+            return redirect('candidate_history')
+
+        # 4. Cria a Candidatura
+        # Pega os dados do Perfil do usuário para preencher o Candidato automaticamente
+        try:
+            profile = request.user.candidateprofile
+            
+            candidate = Candidate.objects.create(
+                job=job, # Pode ser None (Banco de Talentos)
+                name=f"{request.user.first_name} {request.user.last_name}",
+                email=request.user.email,
+                phone=profile.phone,
+                resume_file=profile.resume, # Usa o currículo do perfil
+                status='NOVO' if job else 'BANCO', # Status inicial
+                terms_accepted=True,
+                terms_accepted_at=timezone.now()
+            )
+            
+            if job:
+                messages.success(request, f"Candidatura enviada para {job.title}!")
+            else:
+                messages.success(request, "Seu perfil foi salvo no nosso Banco de Talentos!")
+                
+            return redirect('candidate_history')
+
+        except Exception as e:
+            messages.error(request, "Erro ao processar candidatura. Verifique se seu Perfil está completo (Currículo anexado).")
+            return redirect('profile')
+
+    return redirect('careers_home')
+
+def talent_bank_view(request):
+    """
+    Página específica para aplicar ao Banco de Talentos (sem vaga).
+    """
+    return render(request, 'careers_talent_bank.html')

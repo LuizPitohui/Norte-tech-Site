@@ -57,16 +57,30 @@
                                 <a class="nav-link dropdown-toggle text-white fw-bold" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
                                     Bem-vindo, {{ user.first_name|default:user.username }}
                                 </a>
-                                <ul class="dropdown-menu dropdown-menu-end shadow border-0">
-                                    <li><a class="dropdown-item" href="{% url 'profile' %}"><i class="fas fa-user-circle me-2 text-muted"></i> Meu Perfil</a></li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <form action="{% url 'logout' %}" method="post" class="d-inline">
-                                            {% csrf_token %}
-                                            <button type="submit" class="dropdown-item text-danger"><i class="fas fa-sign-out-alt me-2"></i> Sair</button>
-                                        </form>
-                                    </li>
-                                </ul>
+                                    <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'profile' %}">
+                                                <i class="fas fa-user-circle me-2 text-muted"></i> Meu Perfil
+                                            </a>
+                                        </li>
+                                        
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'candidate_history' %}">
+                                                <i class="fas fa-history me-2 text-muted"></i> Minhas Candidaturas
+                                            </a>
+                                        </li>
+                                        
+                                        <li><hr class="dropdown-divider"></li>
+                                        
+                                        <li>
+                                            <form action="{% url 'logout' %}" method="post" class="d-inline">
+                                                {% csrf_token %}
+                                                <button type="submit" class="dropdown-item text-danger">
+                                                    <i class="fas fa-sign-out-alt me-2"></i> Sair
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
                             </li>
 
                         {% else %}
